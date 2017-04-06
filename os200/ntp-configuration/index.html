@@ -1,0 +1,29 @@
+<h1>Improve NTP configuration to default to local clock:</h1>
+You can add the local clock to the ntp.conf file so that if the NTP server is disconnected from the internet, NTP server provides time from its local system clock.
+</p>
+vi +15 /etc/ntp.conf
+</p>
+Insert the following two lines:
+</p>
+<i>
+server 127.127.1.0 # local clock
+</p>
+fudge 127.127.1.0 stratum 10
+</i>
+</p>
+Execute the command to restart ntp:
+</p>
+service ntp restart
+</p>
+or
+</p>
+sysctl reload ntp.service
+</p>
+ntpq --numeric --peers
+</p>
+For additional documentation see:
+</p>
+http://support.ntp.org/bin/view/Support/UndisciplinedLocalClock
+</p>
+http://doc.ntp.org/4.2.0/drivers/driver1.html
+

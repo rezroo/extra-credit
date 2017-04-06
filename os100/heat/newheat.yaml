@@ -1,0 +1,112 @@
+heat_template_version: 2015-10-15
+
+description: >
+
+  Version: 2014.1
+  This is a heat template for Mirantis OpenStack Training.
+  It will start the VM from cirros image, create the Cinder Volume 
+  Attach the volume to the created VM with specified block device name
+  Create a Ceilometer alarm for CPU utilization by this VM.
+  Because of the alarm the script must be executed by a user with admin
+  role. You can use the admin user, but make sure to use the demo project.
+
+parameters:
+  vm_name:
+    type: string
+    label: VM Name
+    description: The name to use for the VM
+    constraints:
+    - length: {min: 2}
+      description: VM name must be more then 2 characters, letter and numbers only.
+    - allowed_pattern: "[a-zA-Z0-9]+"
+      description: VM name must consist of characters and numbers only.
+
+  vol_size:
+    type: number
+    label: Volume Size
+    description: The size of the volume to be created in GB
+    default: 1
+    constraints:
+    - range: {min: 1, max: 3}
+      description: Volume size must be between 1GB and 3GB
+
+  network:
+    type: string
+    label: Tenant Network Name
+    default: blahblah
+
+  device_name:
+    type: string
+    label: Device Name
+    description: The block device name to use for attached volume inside the VM
+    default: vdc
+    constraints:
+    - length: {min: 3, max: 3}
+      description: The block device name should consists of 3 characters
+    - allowed_pattern: "[a-zA-Z0-9]{3}"
+      description: The block device name must consist of 3 characters and/or numbers only.
+
+resources:
+
+  heat_vm:
+    type: OS::Nova::Server
+    properties:
+      name : {get_param: vm_name}
+      image: cirros-0.3.4-x86_64-uec
+      flavor: m1.tiny
+      networks: [{network: {get_param: network} }]
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            echo "Hi ${vm_name}"
+          params:
+            ${vm_password} : {get_param : vm_name}
+
+  heat_volume:
+    type: OS::Cinder::Volume
+    properties:
+      name: 
+        list_join:
+        - "_"
+        - - {get_param : vm_name}
+          - heat_volume
+      size: {get_param: vol_size}
+      
+  heat_volume_attached:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: {get_resource: heat_vm}
+      volume_id: {get_resource: heat_volume}
+      mountpoint: {list_join : ["/", ["/dev", {get_param: device_name}]]}
+
+  heat_cpu_alarm:
+    type: OS::Ceilometer::Alarm
+    properties:
+      alarm_actions:
+        - log://
+      comparison_operator: ge
+      description: Instance running hot
+      evaluation_periods: "3"
+      meter_name: cpu_util
+      period: "600"
+      statistic: avg
+      threshold: "70.0"
+      matching_metadata:
+        resource_id: {get_resource: heat_vm}
+
+outputs:
+  private_ip:
+    description: Allocated IP
+    value: {get_attr : [heat_vm, first_address]}
+
+  vol_device:
+    value:
+      list_join:
+        - " "
+        - - Volume
+          - {get_attr: [heat_volume, display_name]}
+          - "is attached to"
+          - {get_attr: [heat_vm, "name" ]}
+          - as
+          - {get_param : device_name}

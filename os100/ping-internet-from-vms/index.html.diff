@@ -1,0 +1,20 @@
+<H1>How To Ping 8.8.8.8 From A VM</H1>
+The way our vlab is setup, it will not route the ping from the VM to the internet. To fix that you must configure the vlab as a router.
+</p>
+Additionally, you must source NAT the outgoing packet so ping reply can reach the our vlab host. Without the NAT, the reply to ping cannot reach the VM.
+<H2>Configure Your Controller As A Router</H2>
+First, you may have to also enable ip-forwarding:
+</p>
+vi /etc/sysctl.conf
+</p>
+Uncomment "net.ipv4.ip_forward=1"
+</p>
+sysctl -p
+</p>
+<H2>Add An SNAT Rule</H2>
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+</p>
+Or
+</p>
+iptables -t nat -I POSTROUTING 1 -s 172.24.4.1/24 -j MASQUERADE
+</p>

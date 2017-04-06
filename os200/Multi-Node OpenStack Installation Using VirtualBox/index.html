@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>index.html</title></head><body>
+  
+<h1 style="text-align: center;">Multi-Node OpenStack Installation Using VirtualBox<br>
+</h1>
+There are multiple steps to do this. We will use the <a href="https://s3-us-west-1.amazonaws.com/dlab-togo/dlab-liberty-gold.vmdk" target="_blank">dlab-golden-image.vmdk</a>
+as the basis of our deployment. For additional information on how to
+use the golden-image for a single all-in-one deployment of OpenStack
+please see the <a href="http://trainer.edu.mirantis.com/reza/os200/dlab-vm/">dlab-vm</a>
+extra-credit page. You should master the dlab-vm lab before attempting
+this lab, but you should read the instructions in this lab first, so
+after doing the dlab-vm lab you can just proceed to step 3 of this lab.<br>
+<br>
+For a multi-node deployment our strategy is as follows:<br>
+<ol>
+  <li>Prepare the golden-image for a multi-node setup by making some simple modification.</li>
+  <ul>
+    <li>Power-off and save the new image</li>
+    <li>Use it as a backing-image to create new VMs. This is done by creating a linked-clone in VirtualBox</li>
+    <li>Create one controller VM, and at least one compute VM - all of which are linked-clones of the golden-image</li>
+  </ul>
+  <li>Start the controller-vm and proceed to complete the <a href="http://trainer.edu.mirantis.com/os200/" target="_blank">os200-labs</a> - you can skip lab 10 if you like.
+At the end of this step you will have a working OpenStack all-in-one
+installation. The horizon admin page shows a single hypervisor - same
+as your controller node.</li>
+  <li>Now we can add any number of compute nodes - each being a
+linked-clone of the golden-image VM. Setting up a compute node is
+relatively fast - see below for additional information.</li>
+</ol>
+<h2>Step 1: Prepare the golden-image</h2>
+<ol>
+  <li>Follow the instructions in the <a href="http://trainer.edu.mirantis.com/reza/os200/dlab-vm/">dlab-vm</a>
+extra-credit to create our golden-image VM, but prior to booting the VM
+make sure to enable Promiscous mode on Adapter 3 (VM's eth2). This is
+necessary if our private/data network is using VLAN. You also have a
+choice of using the intnet or the third host-only network:<br>
+    <img style="width: 651px; height: 430px;" alt="Enable Promiscuous Mode on Adapter 3" src="enable-promiscuous-mode.png"><br>
+  </li>
+  <li>Boot your VM and login as stack user. "sudo -i" to become root.<br>
+  </li>
+  <li>The standard golden-image uses "dummy" networks in the cloud for
+eth1 and eth2. In order to create a multi-node cluster we must make
+eth1 and eth2 real interfaces. This is easily done by moving
+/etc/network/if-up.d/dummy to another directory and creating
+/etc/network/interfaces.d/eth1.cfg and
+/etc/network/interfaces.d/eth2.cfg with the same IP settings specified
+in /etc/network/if-up.d/dummy - so better to not remove dummy
+altogether. Sample eth1.cfg and eth2.cfg may look like this:<br>
+# cat eth1.cfg<br>
+--------------<br>
+auto eth1<br>
+iface eth1 inet static<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address 172.30.1.1/24<br>
+# cat eth2.cfg<br>
+
+--------------<br>
+
+auto eth2<br>
+
+iface eth2 inet static<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address 192.168.1.1/24<br>
+  </li>
+  <li>Reboot your VM to make sure all network settings are effective. Login and check configuration of eth0, eth1, and eth2.<br>
+Try pinging eth0 and eth1 from your host. It should work if your
+host-only network settings matches the configuration of eth0 and eth1.</li>
+  <li>Type "sudo shutdown -h now" in your VM console to do a graceful shutdown of the VM.</li>
+  <li>In the VirtualBox console select your VM, on the top-right corner
+select "Snapshots". Then right-click "Current State" and select "Take
+Snapshot".<br>
+Name it something like "dlab-backing-image".<br>
+  </li>
+</ol>
+<h2>Step 2: Setup the OpenStack Controller</h2>
+<h3>
+Create the Controller VM:</h3>
+<ol>
+  
+  
+    
+  <li>In the Snapshots, righ-click the "dlab-backing-image" and select "Clone".</li>
+
+    
+  <li>Call it "dlab-controller" and click "Reinitialize the MAC
+address of all network cards". This is necessary for each VM to have
+distinct NICs.</li>
+
+    
+  <li>Click "Next" and select "Linked clone". This will save
+disk-space. You are still limited by memory, so if you have plenty of
+disk space you can do a "Full clone".</li>
+
+  
+  </ol>
+<h3><a name="Start_the_controller-vm_and_proceed_to"></a>Start the controller-vm and proceed to complete the <a href="http://trainer.edu.mirantis.com/os200/" target="_blank">os200-labs</a> with the following caveats:
+</h3>
+<ol>
+
+
+  
+  <li>You can safely skip <a href="http://trainer.edu.mirantis.com/os200/heat.html" target="_blank">lab-10 (heat)</a> because you can always add it later.</li>
+  <li>You can also skip <a href="http://trainer.edu.mirantis.com/os200/horizon.html" target="_blank">lab-9 (horizon)</a> because you can add that later too, but horizon comes in handy when we want to check the state of our multi-node installation.</li>
+  
+  <li>In a multi-node install all nodes must agree on time, so in <a href="http://trainer.edu.mirantis.com/os200/supporting_services.html#network-time-protocol-ntp" target="_blank">section 2.1</a>
+make sure the clock on the controller has a good defualt. NTP
+configuration for a cloud controller should include controller
+falling back to local clock in case time servers are unavailable.If
+"ntpq --numeric --peers" does not return sane values then add
+the following lines to /etc/ntp.conf (detailed instructions <a href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client" target="_blank">here</a>):<br>
+
+    <span style="font-style: italic; font-weight: bold;">server 127.127.1.0 # local clock</span><br style="font-style: italic; font-weight: bold;">
+    <span style="font-style: italic; font-weight: bold;">
+fudge 127.127.1.0 stratum 10</span></li>
+  <li>Restart ntop using "sudo sysctl reload ntp.service". Test the new ntp configuration by running "ntpq --numeric --peers"</li>
+  <li>In <a href="http://trainer.edu.mirantis.com/os200/neutron-agents.html#networking-plug-in-agent" target="_blank">section 6.2 steps 5 through 8</a> we create br-eth2 and correctly connect it to eth2.
+However, we do not transfer the ip address of eth2 to br-eth2, so the
+configuration is incomplete and would not work in a multi-node setup. For an example please see <a href="http://trainer.edu.mirantis.com/os200/neutron-agents.html#the-networking-l3-agent" target="_blank">section 6.3 steps 18 through 20</a> for the setup of br-ex. We must do the same for br-eth2 - as follows:</li>
+  <ul>
+    <li>Modify /etc/network/interfaces.d/eth2.cfg as follows:<br>
+
+      <span style="font-weight: bold; font-style: italic;">auto eth2</span><br style="font-weight: bold; font-style: italic;">
+      <span style="font-weight: bold; font-style: italic;">
+iface eth2 inet manual</span></li>
+    <li>Create /etc/network/interfaces.d/br-eth2.cfg as follows:<br>
+
+      <span style="font-weight: bold; font-style: italic;">auto br-eth2</span><br style="font-weight: bold; font-style: italic;">
+      <span style="font-weight: bold; font-style: italic;">
+iface br-eth2 inet static</span><br style="font-weight: bold; font-style: italic;">
+      <span style="font-weight: bold; font-style: italic;">
+address 192.168.1.1/24</span></li>
+    <li style="font-weight: bold; font-style: italic;">ip addr del 192.168.1.1/24 dev eth2</li>
+    <li style="font-weight: bold; font-style: italic;">ip addr add 192.168.1.1/24 dev br-eth2</li>
+  </ul>
+  <li>There are no other changes to the controller setup. Complete the labs and test your controller to make sure it works.<br>
+  </li>
+
+
+</ol>
+
+
+<h2>Step 3: Setup an OpenStack Compute</h2>
+<h3>
+Create a Compute node VM:</h3>
+
+<ol>
+<li>In the VirtualBox console select the powered off golden-image VM.
+In the Snapshots, righ-click the "dlab-backing-image" and select
+"Clone".</li><li>Call it "dlab-compute-1" and click "Reinitialize the MAC
+address of all network cards". This is necessary for each VM to have
+distinct NICs.</li><li>Click "Next" and select "Linked clone". This will save
+disk-space. You are still limited by memory, so if you have plenty of
+disk space you can do a "Full clone"</li>
+</ol>
+<h3>Start the dlab-compute-1 VM and follow the below instructions to create your first compute node</h3>
+Setting up a compute node is relatively fast and easy - we must install
+ntp service, neutron L2 agent, and nova-compute and associated
+services. The base instructions for these are in OS200 lab section 2.1,
+section 6.2, and section 8.4 - with some modifcations to allow for this
+being a compute node. Here are the steps:<br>
+<ol>
+  <li>Change the hostname in /etc/hostname and /etc/hosts to dlab-c1</li>
+  <li>Change the ip address of&nbsp; eth2 - as this is a static ip addresses</li>
+  <li>ifdown eth1 as it's not needed and change eth1.cfg to be manual<br>
+  </li>
+  <li>In a multi-node install all nodes must agree on time, so follow the instructions in <a href="http://trainer.edu.mirantis.com/os200/supporting_services.html#network-time-protocol-ntp" target="_blank">section 2.1</a>but
+make sure the clock on the compute node uses the ntp server on&nbsp;
+your controller as a time source. You can accomplish that by have the
+line "server 172.15.0.2" in your /etc/ntp.conf. 172.15.0.2 is the ip
+address of eth0 on my controller - use your controller's ip address.
+Sample result should look like this - but must change the IP address to your
+controller ip address:</li>
+  <ul>
+    <li>
+
+# ntpq --numeric --peers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+remote&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+refid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; st t when poll reach&nbsp;&nbsp;
+delay&nbsp;&nbsp; offset&nbsp; jitter<br>
+
+==============================================================================<br>
+&nbsp;172.15.0.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+.INIT.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 16
+-&nbsp;&nbsp;&nbsp; - 1024&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;
+0.000&nbsp;&nbsp;&nbsp; 0.000&nbsp;&nbsp; 0.000<br>
+      <br>
+    </li>
+  </ul>
+
+  <li>Follow <a href="http://trainer.edu.mirantis.com/os200/neutron-agents.html#networking-plug-in-agent" target="_blank">section 6.2 steps 1 to 9</a> and additionally do <a href="#Start_the_controller-vm_and_proceed_to">step 5 in controller</a> configuration to make sure br-eth2 works:</li>
+  <ul>
+    <li>Modify /etc/network/interfaces.d/eth2.cfg as follows:<br>
+
+      <span style="font-weight: bold; font-style: italic;">auto eth2</span><br style="font-weight: bold; font-style: italic;">
+      <span style="font-weight: bold; font-style: italic;">
+iface eth2 inet manual</span></li>
+    <li>Create /etc/network/interfaces.d/br-eth2.cfg as follows:<br>
+
+      <span style="font-weight: bold; font-style: italic;">auto br-eth2</span><br style="font-weight: bold; font-style: italic;">
+      <span style="font-weight: bold; font-style: italic;">
+iface br-eth2 inet static</span><br style="font-weight: bold; font-style: italic;">
+      <span style="font-weight: bold; font-style: italic;">
+address 192.168.1.2/24</span></li>
+    <li style="font-weight: bold; font-style: italic;">ip addr del 192.168.1.2/24 dev eth2</li>
+    <li style="font-weight: bold; font-style: italic;">ip addr add 192.168.1.2/24 dev br-eth2<br>
+      <br>
+    </li>
+  </ul>
+
+  <li>Before doing step 10 we must do some changes to /etc/neutron/neutron.conf in similar to <a href="http://trainer.edu.mirantis.com/os200/neutron-server.html#install-packages">section 5.1.4 step 9, but just the [oslo_messaging_rabbit]</a>. Set:</li>
+  <ul>
+    <li>[DEFAULT]<br>
+
+...<br>
+
+rpc_backend = rabbit</li>
+    <li>[oslo_messaging_rabbit]<br>
+
+...<br>
+
+rabbit_host = &lt;mgmt IP of the controller - not compute node&gt;<br>
+
+rabbit_userid = guest<br>
+
+rabbit_password = bunny</li>
+    <li><br>
+    </li>
+  </ul>
+  <li>Make all the changes in <a href="http://trainer.edu.mirantis.com/os200/neutron-server.html#install-packages">section 5.1.4 step 10</a></li>
+  <ul>
+    <li>[securitygroup]<br>
+
+
+enable_security_group = True<br>
+
+
+firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver</li>
+  </ul>
+  <li>Proceed to <a href="http://trainer.edu.mirantis.com/os200/nova.html#configure-compute-node">section 8.4 and do all the steps 1 through 8</a><br>
+  </li>
+
+</ol>
+<h3>I think we are done.</h3>Launch a few instances and test.<br>
+<br>
+<br>
+</body></html>

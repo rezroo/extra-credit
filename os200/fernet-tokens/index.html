@@ -1,0 +1,28 @@
+<h1>Configure keystone to use fernet tokens</h1>
+Even though fernet tokens operate very similarly to UUID tokens, they do not require persistence. The keystone token database no longer suffers bloat as a side effect of authentication. Pruning expired tokens from the token database is no longer required when using fernet tokens. Because fernet tokens do not require persistence, they do not have to be replicated. As long as each keystone node shares the same key repository, fernet tokens can be created and validated instantly across nodes.
+</p>
+You can find out more about fernet tokens here:
+</p>
+<a href=http://docs.openstack.org/admin-guide/identity-fernet-token-faq.html>Fernet - Frequently Asked Questions</a>
+</p>
+To configure keystone to use fernet tokens you must first edit /etc/keystone/keystone.conf and change:
+</p>
+<i>
+key_repository = /etc/keystone/fernet-keys/
+</p>
+provider = fernet
+</i>
+</p>
+Execute the following command to setup the fernet keys for your keystone installation:
+</p>
+keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+</p>
+You must now "service apache2 restart" to restart keystone, and can then test your setup by getting a token:
+</p>
+openstack token issue
+</p>
+If your request fails, try using curl and see what the result is:
+</p>
+<a href="http://trainer.edu.mirantis.com/reza/os100/token/v3-get-token-nocat.sh">./v3-get-token-nocat.sh</a> <a href="http://trainer.edu.mirantis.com/reza/os200/fernet-tokens/admin.admin.v3">admin.admin.v3</a>
+</p>
+

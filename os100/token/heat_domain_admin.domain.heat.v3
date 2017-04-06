@@ -1,0 +1,24 @@
+{
+    "auth": {
+        "identity": {
+            "methods": [
+                "password"
+            ],
+            "password": {
+                "user": {
+                    "domain": {
+                        "name": "heat"
+                    },
+                    "name": "heat_domain_admin",
+                    "password": "nova"
+                }
+            }
+        },
+        "scope": {
+            "domain": {
+                "name": "heat"
+            }
+        }
+    }
+}
+

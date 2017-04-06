@@ -1,0 +1,30 @@
+<H1>Neutron Provider Networks</H1>
+<H2>How Neutron Maps Virtual Networks to Physical Networks</H2>
+When an ordinary user creates a neutron network, he cannot dictate the implementation of the network - neutron picks an underlying implementation for the network by consulting the configuration settings in /etc/neutron/plugins/ml2/ml2_conf.ini. The actual name of the plugin could be different, and this is specified in /etc/neutron/neutron.conf - for example in our case - it is:
+</p>
+core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
+</p>
+You can see this default behavior by creating a network as the user demo, and the showing the network attributes as the cloud admin:
+</p>
+neutron net-create foo
+</p>
+neutron --os-username admin net-show foo
+</p>
+The value of the provider:network_type, provider:physical_network, and provider:segmentation_id are assigned based on the settings of tenant_network_types = vxlan and vni_ranges = 1001:2000 specified in /etc/neutron/plugins/ml2/ml2_conf.ini.
+</p>
+<H2>Provider Networks Of Neutron</H2>
+The provider networks extension of neutron allows cloud-admins to override the above default behavior and create a virtual network with their own specification, as follows:
+</P>
+neutron --os-username admin net-create --provider:network_type vlan --provider:segmentation_id 199 --provider:physical_network physnet1 bar
+</P>
+neutron --os-username admin net-create --provider:network_type vxlan --provider:segmentation_id 1999 vbar
+</P>
+neutron --os-username admin net-create --provider:network_type gre --provider:segmentation_id 999 gbar
+</P>
+<H2>Provider Network Use Case</H2>
+Provider networks can be used to connect OpenStack VMs to external resources, such as a database or loadbalancer outside the cloud. You can find a good description in the following links:
+</P>
+<a href="https://developer.rackspace.com/blog/neutron-networking-vlan-provider-networks/">Rackspace blog: VLAN Provider Networks</a>
+</P>
+<a href="http://docs.openstack.org/newton/install-guide-rdo/launch-instance-networks-provider.html">Linux Bridge Provider Networks</a>
+

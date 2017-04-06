@@ -1,0 +1,10 @@
+{
+    "auth": {
+        "passwordCredentials": {
+            "password": "nova",
+            "username": "demo"
+        },
+        "tenantName": "demo"
+    }
+}
+

@@ -1,0 +1,21 @@
+<H1>Significance of OpenStack predefined roles</H1>
+<h2>How do we list available/defined roles in OpenStack?</h2>
+openstack --os-username admin --os-password nova --os-project-name admin --os-auth-url http://127.0.0.1:5000 role list
+</P>
+<h2>How do we determine the significance/meaning of the defined roles in OpenStack?</h2>
+cd /etc/ ; grep "role:" */policy.json
+</P>
+If a role is not mentioned in any policy.json file then assigning that role to a user has no meaning, or significance.
+</P>
+The basic structure of the policy.json files is to reserve certain actions for the cloud-admin role. What is not reserved is is open to all users, which when viewed collectively define the project-admin role. This is called Role Based Access Control (RBAC).
+<h2>Exceptions to the rule:</h2>
+"swift" program predates keystone and does not have a policy.json file. That is ok - a program can decide its own way of doing Authorization. The authorization for swift is declared in proxy-server.conf:
+</P>
+cd /etc/swift ; grep roles proxy-server.conf
+</P>
+You can see from this grep that although role "Member" has no significance for other programs, for swift it makes a difference.
+</P>
+Also of interest is noting that the "admin" role has no super privileges for swift - it simply is an ordinary user. This should drive home the point that there is no such thing as a "root" or "Administrator" user in OpenStack. There are only roles and roles allow or forbid access to various functionality of services, through json.yaml or other service determined mechanism. The role "admin" is just a string and its capabilities are determined by the service.
+</P>
+<b>In other words, it's the service that decides what is "admin"-ness</b>
+

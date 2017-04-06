@@ -1,0 +1,76 @@
+<h1>Debugging OpenStack Installation Issues</h1>
+<h2>1. If the service fails to start, and there is no logfile</h2>
+Most likely cause is errors in the .conf file, which has the service quit before it opens the relevant /var/log/<error-log-file>.
+The process dumps the error to standard out, but when we do a "service xxx start" we don't see stderr and stdout. So to fix this
+type of issue we want to start the daemon from the command line, so we see which line the error is on.
+</p>
+The command line for starting various services is as follows:
+<h3>glance</h3>
+/usr/bin/glance-api --config-file=/etc/glance/glance-api.conf
+</p>
+/usr/bin/glance-registry --config-file=/etc/glance/glance-registry.conf
+<h3>neutron</h3>
+/usr/bin/neutron-server --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini
+</p>
+/usr/bin/neutron-openvswitch-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini
+</p>
+/usr/bin/neutron-dhcp-agent --config-file /etc/neutron/neutron.conf --config-file=/etc/neutron/dhcp_agent.ini
+</p>
+/usr/bin/neutron-l3-agent --config-file /etc/neutron/neutron.conf --config-file=/etc/neutron/l3_agent.ini
+</p>
+/usr/bin/neutron-metadata-agent --config-file /etc/neutron/neutron.conf --config-file=/etc/neutron/metadata_agent.ini
+</p>
+/usr/bin/neutron-lbaas-agent --config-file /etc/neutron/neutron.conf --config-file=/etc/neutron/services/loadbalancer/haproxy/lbaas_agent.ini
+<h3>cinder</h3>
+/usr/bin/cinder-api --config-file /etc/cinder/cinder.conf
+</p>
+/usr/bin/cinder-scheduler --config-file /etc/cinder/cinder.conf
+</p>
+/usr/bin/cinder-volume --config-file /etc/cinder/cinder.conf
+<h3>nova</h3>
+/usr/bin/nova-api
+</p>
+/usr/bin/nova-conductor --config-file /etc/nova/nova.conf
+</p>
+/usr/bin/nova-cert --config-file /etc/nova/nova.conf
+</p>
+/usr/bin/nova-scheduler --config-file /etc/nova/nova.conf
+</p>
+/usr/bin/nova-novncproxy --config-file /etc/nova/nova.conf --web /opt/stack/noVNC
+</p>
+/usr/bin/nova-consoleauth --config-file /etc/nova/nova.conf
+</p>
+sg libvirtd '/usr/bin/nova-compute --config-file /etc/nova/nova.conf'
+<h3>heat</h3>
+/usr/bin/heat-engine --config-file=/etc/heat/heat.conf
+</p>
+/usr/bin/heat-api --config-file=/etc/heat/heat.conf
+</p>
+/usr/bin/heat-api-cloudwatch --config-file=/etc/heat/heat.conf
+</p>
+<h2>2. When service is running but you get an error </h2>
+<h3>2.1 Use the --debug cli option </h3>
+I start by running the command with --debug, to see if the additional information gives a clue about what is wrong.
+<h3>2.2 Check the logfiles</h3>
+If that fails, then I run grep the logfile - the strings to search for are:
+</p> Error </p> Exception </p>
+If I find too many errors to make sense of, I delete (or move) the original logfiles, and rerun the command to only deal with the specific case I'm debugging. If you want to be maticulous, you can first stop the service/daemon, delete the logfile, restart the service. But most of the time it's not necessary.
+</p> Most logfiles are under their respective directories under /var/log/, except for keystone and horizon which run as apache services. Their logfiles are:
+</p> /var/log/apache2/keystone.log
+</p> /var/log/apache2/keystone_access.log
+</p> /var/log/apache2/horizon_error.log
+<h3>2.3 Enable debug and verbose in .conf files</h3>
+Sometimes, the logfiles don't help - in that case we need more logs :-).
+</p> Edit the relevant .conf file - find or add the debug and/or verbose settings and turn them on:
+</p> debug = True
+</p> verbose = True
+</p> Save the file, optionally delete the old logfiles, and restart the associated service, or services.
+</p> And then check the logfiles.
+<h3>2.4 If all the above failes, then my final step is to read the code</h3>
+</p> Hopefully we don't have to get this far - but sometimes there isn't enough log information to figure out what is happening.
+I then look at the python exception trace and start viewing the files and reading the code and comments to get additional insight.
+<h2>
+Most issues are resolvable using these steps if you have a good understanding of what is supposed to happen.
+</h2>
+
+

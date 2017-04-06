@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>dlab-vm</title>
+
+  
+</head><body>
+<h1 style="text-align: center;">OS200 Lab On VirutalBox<br>
+</h1>
+This extra-credit lab teaches you how to recreate the OS200 lab
+environment on VirtualBox - so it's permanently available to you for
+experimentation. The instructions are for VirtualBox, but the golden
+image is VMDK format, so any hypervisor that supports VMDK can be used
+- such as VMware.<br>
+<h2>Step 1: Download and install Oracle VirtualBox</h2>
+<ol>
+  <li>Refer to <a href="http://trainer.edu.mirantis.com/reza/os100/install-test-VirtualBox/">these instructions</a> to download your platform specific installer from <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">Oracle</a> and install and test VirtualBox.</li>
+  <li>Create (or make sure you have) three host-only networks available <br>
+  </li>
+</ol>
+<h2>Step 2: Download the golden-image</h2>
+<ol>
+  <li>Download the golden dlab image:
+
+    <a href="https://s3-us-west-1.amazonaws.com/dlab-togo/dlab-liberty-gold.vmdk">
+https://s3-us-west-1.amazonaws.com/dlab-togo/dlab-liberty-gold.vmdk
+    </a></li>
+  <li>
+
+Create a <b>Linux/Ubuntu(64-bit)</b> VM in virtualbox with:
+
+2 vcpu
+
+6G ram. Use the downloaded image as the VM's boot disk.</li>
+  <li>Modify the networks of the new VM to have 3 Adapter/NIC - in hostonly interface mode.<br>
+    <b>Note:</b> You need 3 distinct hostonly interfaces. By default
+VirtualBox only has 1 hostonly interface defined. To create additional
+hostonly interfaces, using the VirtualBox Management Console, you can
+navigate to File/Preferences, select Network, select the "Host-only
+Networks" tab, and click the + button to create more networks.</li>
+  <li>Power on and start with the <a href="http://trainer.edu.mirantis.com/os200/">OS200 Lab Instructions</a>. Login credentials are the same as OS200 lab: stack/b00tcamp</li>
+  <li>Since we do a lot of "sudo" and "sudo -i" optionally enable passwordless sudo for user stack, to save on typing:</li>
+  <ul>
+    <li>Make sure you have two ssh windows into your machines - logged
+in as user "root" in one - because if you mess this up there is no easy
+way to recover root privilege - except through your root ssh window</li>
+    <li>On the first ssh window - become root by executing "sudo -i" and entering b00tcamp as the password<br>
+    </li>
+    <li>On the second ssh window execute "sudo vi /etc/sudoers" and modify /etc/sudoers as follows:<br>
+Search for "/^sudo" and add NOPASSWD: before the last ALL - the line should look like this:<br>
+      <span style="font-weight: bold; font-style: italic;">%sudo&nbsp;&nbsp; ALL=(ALL:ALL) NOPASSWD:ALL</span></li>
+    <li>Save the file and quit the editor. In the same window try "sudo -i". If it works you are done and can close the second window.<br>
+    </li>
+    <li>If sudo fails then use the second window to revert your changes and try again.<br>
+      <br>
+    </li>
+  </ul>
+</ol>
+<br>
+
+
+</body></html>

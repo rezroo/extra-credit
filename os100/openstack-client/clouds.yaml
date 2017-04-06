@@ -1,0 +1,36 @@
+clouds:
+  devstack:
+    auth:
+      auth_url: http://127.0.0.1:35357/v2.0
+      password: nova
+      project_name: demo
+      username: demo
+    identity_api_version: '2.0'
+    region_name: RegionOne
+  devstack-admin:
+    auth:
+      auth_url: http://127.0.0.1:35357/v2.0
+      password: nova
+      project_name: admin
+      username: admin
+    identity_api_version: '2.0'
+    region_name: RegionOne
+  devstack3:
+    auth:
+        auth_url: http://127.0.0.1:5000/v3
+        password: nova
+        project_name: demo
+        username: demo
+        domain_name: Default
+    identity_api_version: '3'
+    region_name: RegionOne
+  devstack-admin3:
+    auth:
+        auth_url: http://127.0.0.1:5000/v3
+        password: nova
+        project_name: admin
+        username: admin
+        domain_name: Default
+    identity_api_version: '3'
+    region_name: RegionOne
+

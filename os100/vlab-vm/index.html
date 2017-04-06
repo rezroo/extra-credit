@@ -1,0 +1,27 @@
+Download the golden vlab image:
+</P>
+<a href="https://s3-us-west-1.amazonaws.com/vlab-togo/vlab-liberty-gold.vmdk">
+https://s3-us-west-1.amazonaws.com/vlab-togo/vlab-liberty-gold.vmdk
+</a>
+</P>
+Create a VM in virtualbox with:
+</P>
+Use the downloaded image as the VM's boot disk.
+</P>
+Give the VM at least 6G of ram
+</P>
+Modify the VM to have at least 2 vcpu
+</P>
+Modify the Adapter 1 NIC to be in hostonly interface mode
+</P>
+<b>In VirtualBox Console File/Preferences select "Network", "Host-only Networks" tab, and make sure the hostonly interface you assigned to Adapter 1 has DHCP enabled.</b>
+</P>
+Power on and install openstack by login in as stack/b00tcamp, and executing:
+</P>
+./devstack/stack.sh
+</P>
+Remember to stack.sh on every reboot. You can avoid restacking if you hybernate your VM after the first boot, rather than shutting it down.
+</P>
+
+Read <a href="http://trainer.edu.mirantis.com/os100/openstack-to-go.html">"Appendix B. OpenStack To Go"</a> for additional information.
+

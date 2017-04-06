@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>install-virtualbox</title></head><body>
+<h1 style="text-align: center;">Download and install Oracle VirtualBox</h1>
+
+We use VirtualBox because it's free and is supported on all platforms: windows, mac, linux.<br>
+
+<h2>Download your platform specific installer from <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">Oracle</a> and install VirtualBox.</h2>
+<h2>Create a TEST VM:</h2>
+Click "new" and follow the instructions in the image below. If
+the "Ubuntu (64-bit)" option is not available to you then you do not
+have hardware virtualization enabled. Most Intel CPU have this feature,
+but it must be explicitly enabled in the BIOS. So reboot your computer
+into BIOS and enable hw virtualization.<br>
+<br>
+If you do get the "Ubuntu (64-bit)" option then click "Next" and take
+the defaults for the rest, and click create to create your VM.
+    
+<div style="text-align: left;"><img style="width: 350px; height: 399px;" alt="Create a TEST VM" src="create-test-vm.png">
+<br>
+
+</div>
+<h2>Create a Host-Only Network:</h2>
+On the VirtualBox console, select File/Preferences. In the new dialog select "Network" and click the "Host-only Networks" tab:<br>
+<img style="width: 529px; height: 367px;" alt="Add a host-only network" src="create-host-only-network.png"><br>
+Click on the "+" icon to create a new host-only network. Configure the network as follows:<br>
+<ul>
+  <li>Adapter/IPv4 Address: 10.10.10.254&nbsp; # This is the gateway address for the network</li>
+  <li>Adapter/IPv4 Network Mask:&nbsp; 255.255.255.0</li>
+</ul>
+Click the "DHCP Server" tab and configure:<br>
+<ul>
+  <li>Enable Server</li>
+  <li>Server Address: 10.10.10.254&nbsp; # Same as your default gateway</li>
+  <li>Server Mask:&nbsp; 255.255.255.0&nbsp;&nbsp; # Same as your network mask</li>
+  <li>Lower Address Bound: 10.10.10.1</li>
+  <li>Upper Address Bound: 10.10.10.253</li>
+</ul>
+Click OK to save your settings. Remember your host-only network name, to be used below.<br>
+<h2>Modify TEST VM to use the newly created host-only network</h2>
+Select the TEST VM - right-click and choose "Settings..."<br>
+Select "Network"<br>
+You can either modify the "Adapter 1" and switch from "NAT" to
+"host-only", or even better - add a new adapter, by enabling "Adapter
+2" and configuring it as below:<br>
+<img style="width: 651px; height: 430px;" alt="Add a host-only adapter/NIC" src="add-host-only-interface.png"><br>
+I like using the "Paravirtualized Network" rather than true hw virtualization.<br>
+Click OK to save your changes to TEST VM.<br>
+<h2>Optionally, boot your VM</h2>
+Your VM is ready to be turned on - however, there is nothing on its
+boot disk - so in order to really use it you must boot with an ISO
+image and go through installation. But you can skip this because in our
+labs we use a golden-image, which is disk that's already configured to
+be a working boot disk.<br>
+<h2>Delete your VM</h2>
+If you powered on your VM then right-click and power it off using "Close/Power Off".<br>
+Now right-click and "Remove" your move. Select "Delete all files".<br>
+<br>
+<br>
+
+
+  
+
+</body></html>
