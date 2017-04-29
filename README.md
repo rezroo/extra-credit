@@ -1,4 +1,4 @@
-The content here represents material I share with students as questions come up in the class. I host these
-for myself under trainer.edu.mirantis.com/reza because I explicitly tell students that Mirantis is not responsible
-for this content, and if they have any future questions related to them, they have to come to me, not Mirantis
-support/education.
+The content here represents material to share with students as questions come up in the class. 
+It is important to note that Mirantis is not responsible for supporting the content included here,
+and the instructors choose to share them at their own discretion.  Any future questions related
+to them should be sent directly to the instructor, and not Mirantis support/education.
