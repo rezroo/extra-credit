@@ -2,6 +2,7 @@
 <html><head>
 
 
+
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>index.html</title></head><body>
   
 <h1 style="text-align: center;">Multi-Node OpenStack Installation Using VirtualBox<br>
@@ -9,7 +10,7 @@
 There are multiple steps to do this. We will use the <a href="https://s3-us-west-1.amazonaws.com/dlab-togo/dlab-liberty-gold.vmdk" target="_blank">dlab-golden-image.vmdk</a>
 as the basis of our deployment. For additional information on how to
 use the golden-image for a single all-in-one deployment of OpenStack
-please see the <a href="http://trainer.edu.mirantis.com/reza/os200/dlab-vm/">dlab-vm</a>
+please see the <a href="../dlab-vm/">dlab-vm</a>
 extra-credit page. You should master the dlab-vm lab before attempting
 this lab, but you should read the instructions in this lab first, so
 after doing the dlab-vm lab you can just proceed to step 3 of this lab.<br>
@@ -32,7 +33,7 @@ relatively fast - see below for additional information.</li>
 </ol>
 <h2>Step 1: Prepare the golden-image</h2>
 <ol>
-  <li>Follow the instructions in the <a href="http://trainer.edu.mirantis.com/reza/os200/dlab-vm/">dlab-vm</a>
+  <li>Follow the instructions in the <a href="../dlab-vm/">dlab-vm</a>
 extra-credit to create our golden-image VM, but prior to booting the VM
 make sure to enable Promiscous mode on Adapter 3 (VM's eth2). This is
 necessary if our private/data network is using VLAN. You also have a
@@ -246,4 +247,5 @@ firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewal
 <h3>I think we are done.</h3>Launch a few instances and test.<br>
 <br>
 <br>
+
 </body></html>
