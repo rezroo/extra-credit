@@ -1,0 +1,38 @@
+#!/bin/bash -x
+sudo apt-get update
+sudo apt-get install -y git sqlite3
+sudo apt-get install -y libyaml-dev libffi-dev python-dev python-libvirt python-pip qemu-kvm qemu-utils libvirt-bin libvirt-dev ubuntu-vm-builder bridge-utils
+sudo apt-get install -y python-virtualenv libpq-dev libgmp-dev
+sudo pip install pip virtualenv --upgrade
+
+mkdir dev
+cd dev
+wget http://vault.infra.mirantis.net/MirantisOpenStack-9.0.iso
+
+git clone https://github.com/openstack/fuel-devops.git
+git clone https://github.com/openstack/fuel-qa.git
+
+
+export VENV_PATH="/home/stack/dev/fuel-venv"
+export WORKSPACE="/home/stack/dev/workspace"
+export DEVOPS_DB_NAME="${VENV_PATH}/fuel_devops.sqlite3"
+export PATH_TO_CERT="${WORKSPACE}/${ENV_NAME}.crt"
+export PATH_TO_PEM="${WORKSPACE}/${ENV_NAME}.pem"
+
+
+virtualenv --system-site-packages ./fuel-venv
+cp ./fuel-venv/bin/activate ./activate.bak
+
+echo "export DEVOPS_DB_ENGINE='django.db.backends.sqlite3'" >> "${VENV_PATH}/bin/activate"
+echo "export DEVOPS_DB_NAME=\${VIRTUAL_ENV}/fuel_devops.sqlite3" >> "${VENV_PATH}/bin/activate"
+sed -i "s/\(unset VIRTUAL_ENV\)/\1 DEVOPS_DB_ENGINE DEVOPS_DB_NAME/" "${VENV_PATH}/bin/activate"
+
+source fuel-venv/bin/activate
+pip install ./fuel-devops --upgrade
+pip install -r fuel-qa/fuelweb_test/requirements.txt --upgrade
+
+
+django-admin.py syncdb --settings=devops.settings
+django-admin.py migrate devops --settings=devops.settings
+
+dos.py list

@@ -1,0 +1,466 @@
+Script started on Fri 28 Apr 2017 05:29:34 AM UTC
+]0;root@lab: ~root@lab:~# virsh pool-list
+ Name                 State      Autostart 
+-------------------------------------------
+ default              active     yes       
+
+]0;root@lab: ~root@lab:~# virsh pool-dumpxml default
+<pool type='dir'>
+  <name>default</name>
+  <uuid>81e0b5b8-8f98-457b-a0fd-86b925042673</uuid>
+  <capacity unit='bytes'>158399967232</capacity>
+  <allocation unit='bytes'>2992611328</allocation>
+  <available unit='bytes'>155407355904</available>
+  <source>
+  </source>
+  <target>
+    <path>/pool/images</path>
+    <permissions>
+      <mode>0711</mode>
+      <owner>-1</owner>
+      <group>-1</group>
+    </permissions>
+  </target>
+</pool>
+
+]0;root@lab: ~root@lab:~# virsh vol-list --pool default
+ Name                 Path                                    
+------------------------------------------------------------------------------
+ MirantisOpenStack-7.0.iso /pool/images/MirantisOpenStack-7.0.iso  
+ test-env-9.0_admin_iso /pool/images/test-env-9.0_admin_iso     
+ test-env-9.0_admin_system /pool/images/test-env-9.0_admin_system  
+ test-env-9.0_slave-01_cinder /pool/images/test-env-9.0_slave-01_cinder
+ test-env-9.0_slave-01_swift /pool/images/test-env-9.0_slave-01_swift
+ test-env-9.0_slave-01_system /pool/images/test-env-9.0_slave-01_system
+ test-env-9.0_slave-02_cinder /pool/images/test-env-9.0_slave-02_cinder
+ test-env-9.0_slave-02_swift /pool/images/test-env-9.0_slave-02_swift
+ test-env-9.0_slave-02_system /pool/images/test-env-9.0_slave-02_system
+ test-env-9.0_slave-03_cinder /pool/images/test-env-9.0_slave-03_cinder
+ test-env-9.0_slave-03_swift /pool/images/test-env-9.0_slave-03_swift
+ test-env-9.0_slave-03_system /pool/images/test-env-9.0_slave-03_system
+ test-env-9.0_slave-04_cinder /pool/images/test-env-9.0_slave-04_cinder
+ test-env-9.0_slave-04_swift /pool/images/test-env-9.0_slave-04_swift
+ test-env-9.0_slave-04_system /pool/images/test-env-9.0_slave-04_system
+ test-env-9.0_slave-05_cinder /pool/images/test-env-9.0_slave-05_cinder
+ test-env-9.0_slave-05_swift /pool/images/test-env-9.0_slave-05_swift
+ test-env-9.0_slave-05_system /pool/images/test-env-9.0_slave-05_system
+
+]0;root@lab: ~root@lab:~# x=`cat vol.lst`
+]0;root@lab: ~root@lab:~# for i in $x; do virsh vol-dumpxml $i --pool default; done
+<volume type='file'>
+  <name>MirantisOpenStack-7.0.iso</name>
+  <key>/pool/images/MirantisOpenStack-7.0.iso</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>2930278400</capacity>
+  <allocation unit='bytes'>2930282496</allocation>
+  <target>
+    <path>/pool/images/MirantisOpenStack-7.0.iso</path>
+    <format type='iso'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493340014.402619000</atime>
+      <mtime>1493339991.937787418</mtime>
+      <ctime>1493339991.937787418</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_admin_iso</name>
+  <key>/pool/images/test-env-9.0_admin_iso</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>2902458368</capacity>
+  <allocation unit='bytes'>2902462464</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_admin_iso</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>110</owner>
+      <group>111</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347585.476624000</atime>
+      <mtime>1493347571.320624000</mtime>
+      <ctime>1493347585.444624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_admin_system</name>
+  <key>/pool/images/test-env-9.0_admin_system</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>80530636800</capacity>
+  <allocation unit='bytes'>9767600128</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_admin_system</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>110</owner>
+      <group>111</group>
+    </permissions>
+    <timestamps>
+      <atime>1493357403.896624000</atime>
+      <mtime>1493357426.968624000</mtime>
+      <ctime>1493357426.968624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-01_cinder</name>
+  <key>/pool/images/test-env-9.0_slave-01_cinder</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-01_cinder</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.344624000</atime>
+      <mtime>1493347572.344624000</mtime>
+      <ctime>1493347572.344624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-01_swift</name>
+  <key>/pool/images/test-env-9.0_slave-01_swift</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-01_swift</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.356624000</atime>
+      <mtime>1493347572.356624000</mtime>
+      <ctime>1493347572.356624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-01_system</name>
+  <key>/pool/images/test-env-9.0_slave-01_system</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-01_system</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.328624000</atime>
+      <mtime>1493347572.328624000</mtime>
+      <ctime>1493347572.328624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-02_cinder</name>
+  <key>/pool/images/test-env-9.0_slave-02_cinder</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-02_cinder</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.476624000</atime>
+      <mtime>1493347572.476624000</mtime>
+      <ctime>1493347572.476624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-02_swift</name>
+  <key>/pool/images/test-env-9.0_slave-02_swift</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-02_swift</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.488624000</atime>
+      <mtime>1493347572.488624000</mtime>
+      <ctime>1493347572.488624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-02_system</name>
+  <key>/pool/images/test-env-9.0_slave-02_system</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-02_system</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.464624000</atime>
+      <mtime>1493347572.464624000</mtime>
+      <ctime>1493347572.464624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-03_cinder</name>
+  <key>/pool/images/test-env-9.0_slave-03_cinder</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-03_cinder</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.592624000</atime>
+      <mtime>1493347572.592624000</mtime>
+      <ctime>1493347572.592624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-03_swift</name>
+  <key>/pool/images/test-env-9.0_slave-03_swift</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-03_swift</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.604624000</atime>
+      <mtime>1493347572.604624000</mtime>
+      <ctime>1493347572.604624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-03_system</name>
+  <key>/pool/images/test-env-9.0_slave-03_system</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-03_system</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.580624000</atime>
+      <mtime>1493347572.580624000</mtime>
+      <ctime>1493347572.580624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-04_cinder</name>
+  <key>/pool/images/test-env-9.0_slave-04_cinder</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-04_cinder</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.700624000</atime>
+      <mtime>1493347572.700624000</mtime>
+      <ctime>1493347572.700624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-04_swift</name>
+  <key>/pool/images/test-env-9.0_slave-04_swift</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-04_swift</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.712624000</atime>
+      <mtime>1493347572.712624000</mtime>
+      <ctime>1493347572.712624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-04_system</name>
+  <key>/pool/images/test-env-9.0_slave-04_system</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-04_system</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.692624000</atime>
+      <mtime>1493347572.692624000</mtime>
+      <ctime>1493347572.692624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-05_cinder</name>
+  <key>/pool/images/test-env-9.0_slave-05_cinder</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-05_cinder</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.804624000</atime>
+      <mtime>1493347572.804624000</mtime>
+      <ctime>1493347572.804624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-05_swift</name>
+  <key>/pool/images/test-env-9.0_slave-05_swift</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-05_swift</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.812624000</atime>
+      <mtime>1493347572.812624000</mtime>
+      <ctime>1493347572.812624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+<volume type='file'>
+  <name>test-env-9.0_slave-05_system</name>
+  <key>/pool/images/test-env-9.0_slave-05_system</key>
+  <source>
+  </source>
+  <capacity unit='bytes'>53687091200</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <target>
+    <path>/pool/images/test-env-9.0_slave-05_system</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+    <timestamps>
+      <atime>1493347572.792624000</atime>
+      <mtime>1493347572.792624000</mtime>
+      <ctime>1493347572.792624000</ctime>
+    </timestamps>
+  </target>
+</volume>
+
+]0;root@lab: ~root@lab:~# exit
+
+Script done on Fri 28 Apr 2017 05:30:30 AM UTC

@@ -1,0 +1,29 @@
+    1  yum install fuel-octane
+    2  octane fuel-backup --to fuel-9.0.fresh.tar.gz
+    3  octane fuel-repo-backup --full --to fuel-9.0.repo.backup.tar.gz
+    4  ls -ltr
+    5  cd /var/www
+    6  ls
+    7  cd nailgun/
+    8  df .
+    9  df -h .
+   10  ping 8.8.8.8
+   11  cd
+   12  ls
+   13  yum install -y http://mirror.fuel-infra.org/mos-repos/centos/mos9.0-centos7/9.2-updates/x86_64/Packages/mos-release-9.2-1.el7.x86_64.rpm
+   14  ls -ltr
+   15  ls /var/tmp/yum-root-GCvsVv/
+   16  yum clean all
+   17  yum install mos-updates
+   18  ls -ltr
+   19  cd mos_playbooks/
+   20  ls
+   21  cd mos_mu/
+   22  ls
+   23  vi README.rst 
+   24  pwd
+   25  ansible-playbook playbooks/mos9_prepare_fuel.yml
+   26  ansible-playbook playbooks/update_fuel.yml -e '{"rebuild_bootstrap":false}'
+   27  ansible-playbook playbooks/mos9_fuel_upgrade_kernel_4.4.yml
+   28  fuel2 fuel-version
+   29  history > ~/hist.upgrade.to.9.2.txt

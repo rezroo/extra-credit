@@ -1,0 +1,5 @@
+export ENV_NAME="test-env-9.0"
+export ISO_PATH="/home/stack/dev/MirantisOpenStack-9.0.iso"
+source fuel-venv/bin/activate
+dos.py create-env my-env.yaml
+dos.py admin-setup $ENV_NAME
