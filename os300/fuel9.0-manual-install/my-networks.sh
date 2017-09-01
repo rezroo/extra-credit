@@ -11,3 +11,5 @@ netCreate admin ./networks/admin.xml
 netCreate public ./networks/public.xml
 netCreate external ./networks/external.xml
 
+virsh net-destroy default
+virsh net-list
