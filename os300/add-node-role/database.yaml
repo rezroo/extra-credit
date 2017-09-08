@@ -1,0 +1,29 @@
+meta:
+  conflicts:
+  - compute
+  description: The Controller initiates orchestration activities and provides an external
+    API.  Other components like Glance (image storage), Keystone (identity management),
+    Horizon (OpenStack dashboard) and Nova-Scheduler are installed on the controller
+    as well.
+  group: base
+  has_primary: true
+  limits:
+    min: 1
+    overrides:
+    - condition: settings:neutron_advanced_configuration.neutron_l3_ha.value == true
+      message: Neutron L3 HA requires at least 2 Controller nodes to function properly.
+      min: 2
+    recommended: 3
+  name: DB
+  public_for_dvr_required: true
+  public_ip_required: true
+  tags:
+  - database
+  update_required:
+  - compute
+  - cinder
+  weight: 10
+name: controller
+volumes_roles_mapping:
+- allocate_size: min
+  id: mysql
