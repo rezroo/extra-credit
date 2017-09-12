@@ -8,4 +8,4 @@ sudo apt-get update
 sudo apt-get install -y docker-engine=1.12.6-0~ubuntu-xenial
 sudo usermod -aG docker vagrant
 sudo apt-get install curl
-curl -Lo docker-compose https://github.com/docker/compose/releases/download/1.12.0/docker-compose-Linux-x86_64 && chmod +x docker-compose && sudo mv docker-compose /usr/local/bin/
+curl -Lo docker-compose https://github.com/docker/compose/releases/download/1.14.0/docker-compose-Linux-x86_64 && chmod +x docker-compose && sudo mv docker-compose /usr/local/bin/

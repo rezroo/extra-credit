@@ -52,7 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define vm_name do |vm|
       vm.vm.host_name = vm_name.to_s + "." + domain
       vm_body[:ips].each do |ip|
-        vm.vm.network "private_network", :ip => ip, virtualbox__hostonly: VBOXNET
+        vm.vm.network "private_network", :ip => ip
       end
 
       vm.vm.provider :libvirt do |vb|
