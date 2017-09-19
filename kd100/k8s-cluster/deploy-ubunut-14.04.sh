@@ -1,9 +1,21 @@
 #!/usr/bin/env bash
 set -e
 
+PROGNAME=`basename "$0"`
+DIRNAME=`dirname "$0"`
+
 # wget https://github.com/rezroo/extra-credit.git
 
-install_vagrant() {
+install_misc()
+{
+    sudo apt-get update
+    sudo apt-get install dnsutils -y
+}
+
+install_misc
+
+install_vagrant()
+{
     _dir=$1
     if [[ ! -f ${_dir}/vagrant_1.9.1_x86_64.deb ]]; then
         wget https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb -P ${_dir}
@@ -16,5 +28,17 @@ install_vagrant() {
 }
 
 install_vagrant $HOME
-cp Vagrantfile.libvirt Vagrantfile
-vagrant up
+
+run_app()
+{
+    _dir=$1
+    mkdir -p ${_dir}
+    pushd ${_dir}
+    cp ${dirname}/Vagrantfile.libvirt Vagrantfile
+    cp -a ${dirname}/data/ .
+    vagrant up
+    popd
+}
+
+run_app ${HOME}/run
+
