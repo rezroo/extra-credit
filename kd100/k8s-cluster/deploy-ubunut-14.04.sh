@@ -2,7 +2,8 @@
 set -e
 
 PROGNAME=`basename "$0"`
-DIRNAME=`dirname "$0"`
+DIRNAME=`pwd`
+NAME=${1:-run}
 
 # wget https://github.com/rezroo/extra-credit.git
 
@@ -34,11 +35,11 @@ run_app()
     _dir=$1
     mkdir -p ${_dir}
     pushd ${_dir}
-    cp ${dirname}/Vagrantfile.libvirt Vagrantfile
-    cp -a ${dirname}/data/ .
+    cp ${DIRNAME}/Vagrantfile.libvirt Vagrantfile
+    cp -a ${DIRNAME}/data/ .
     vagrant up
     popd
 }
 
-run_app ${HOME}/run
+run_app ${HOME}/${NAME}
 
