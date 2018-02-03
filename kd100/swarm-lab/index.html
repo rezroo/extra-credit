@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>index.html</title></head><body>
+<h1>Sky's The Limit Lab</h1>
+<h2>Introduction</h2>
+This lab's intention is twofold:<br>
+<ol>
+  <li>Introduce docker swarm</li>
+  <li>In such a way that show the power of containers and this new paradigm</li>
+</ol>
+<h2>Setup</h2>
+We are going to create a swarm cluster on a single machine. Each node
+in a swarm cluster runs a docker-engine (dockerd) daemon. The trick to
+having multiple engines on the same node is called <a href="https://hub.docker.com/_/docker/" target="_blank">"dind"</a> - or docker-in-docker. It effectively runs docker-engine in a container - equivalent to nested virtualization in the VM world.<br>
+<br>
+We will use the lab as the swarm master node, and lauch three instances
+of dind as three worker nodes, which will join our swarm cluster. We
+will also launch a local registry and the swarm visualizer.<br>
+<ul>
+  <li>ssh stack@&lt;lab-public-ip&gt;</li>
+  <li>sudo ~/kd100-scripts/install/install-swarm.sh</li>
+</ul>
+<h2>Inspect your swarm cluster</h2>
+<ul>
+  <li>docker ps</li>
+  <li>docker stack ls</li>
+  <li>docker service ls</li>
+</ul>
+You results should match what you see in the swarm visualizer at http://&lt;your-lab-ip&gt;:8080.<br>
+Inspect one of the workers:<br>
+<ul>
+  <li>docker exec&nbsp; worker-3 docker ps<br>
+  </li>
+</ul>
+<h2>Voting app in a swarm cluster</h2>
+Next, we are going to launch a slightly modified version of the <a href="https://github.com/dockersamples/example-voting-app/blob/master/docker-stack.yml">swarm-mode example-voting-application</a>.<br>
+<ul>
+  <li>docker stack deploy -c ~/kd100-scripts/labs/example-voting-app-stack.yml vote</li>
+  <li>Test your application on http://&lt;your-lab-ip&gt;:5000</li>
+  <li>See your results on http://&lt;your-lab-ip&gt;:5001</li>
+  <li>View the file ~/kd100-scripts/labs/example-voting-app-stack.yml to match what you see with the application setting</li>
+</ul>
+<h2>Test swarm's declarative model</h2>
+<ul>
+  <li>Find the vote_vote service: docker stack ps vote</li>
+  <li>Get the container id of the vote_vote service:&nbsp; docker exec&nbsp; worker-3 docker ps</li>
+  <li>Watch the visualizer while you kill the container:&nbsp; docker exec&nbsp; worker-3 docker kill &lt;the-container-id-or-name&gt;</li>
+  <li>Scale your vote_vote service:&nbsp; docker service scale vote_vote=2</li>
+</ul>
+<h2>Tear Down</h2>
+Teardown the swarm cluster:<br>
+<ul>
+  <li>sudo ~/kd100-scripts/install/purge-swarm.sh<br>
+  </li>
+</ul>
+<br>
+</body></html>

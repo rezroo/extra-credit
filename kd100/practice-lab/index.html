@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Compose to Kubernetes</title></head><body>
+<h1>Convert <a href="https://github.com/dockersamples/example-voting-app">Example Docker Vote Application</a> to Kubernetes</h1>
+<ol>
+  <li>As a kubernetes cluster admin create three PersistenVolumes of type hostPath and size 50Mi, 100Mi, and 150Mi.</li>
+  <li>As a kubernetes user create one PersistentVolumeClaim with accessMode of read and write of size 80Mi</li>
+  <li>Check to make sure the PVC is bound to a PV</li>
+  <li>Create a deployment with 1 replica for image postgres:9.4 that user the PVC created in step 2</li>
+  <li>Create a Service for the previous deployment which targets port 5432</li>
+  <li>Create a deployment with 2 replicas for image redis:alpine with port 6379</li>
+  <li>Create a Service for the previous deployment which targets port 6379</li>
+  <li>Create a Deployment with 2 replicas for image dockersamples/examplevotingapp_worker</li>
+  <li>Create a Deployment with 1 replica for image dockersamples/examplevotingapp_vote:before</li>
+  <li>Create a Service of type NodePort for the previous deployment</li>
+  <li>Create a Deployment with 1 replica for image dockersamples/examplevotingapp_result:before</li>
+  <li>Create a Service of type NodePort for the previous deployment</li>
+</ol>
+<br>
+
+  
+
+</body></html>
