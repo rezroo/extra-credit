@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>secure-db</title></head><body>In
+many multi-tier deployment scenarios the web-frontend is in the DMZ
+while the database is in a secure network not accessible from the
+internet. Here is a simple example of such a deployment in OpenStack,
+where the database VM is on an isolated network, not connected to a
+router..<br>
+<ol>
+  
+  <li>Create a shared network dbnet:<br>
+    <br>source credrc.sh<br>
+
+openstack network create dbnet<br>
+openstack subnet create --network dbnet --subnet-pool shared-default-subnetpool dbsubnet<br>
+    <br>
+  </li>
+
+  <li>Launch an isolated VM on the isolated network dbnet.<br>
+Because the VM is on an isolated network you must use --config-drive True for it to be able to get access to its user-data.<br>
+    <br>
+openstack server create --image CirrosQcow --flavor 1 --nic net-id=dbnet --config-drive True db<br>
+    <br>
+  </li>
+  <li>Create a script to modify /etc/network/interfaces in your local drive:<br>
+    <br>
+vim fix-interfaces.txt and add the following lines:<br>
+    <blockquote type="cite">#!/bin/sh<br>
+cat &lt;&lt;TEXT &gt;&gt; /etc/network/interfaces<br>
+      <br>
+auto eth1<br>
+iface eth1 inet dhcp<br>
+TEXT<br>
+      <br>
+ifup eth1<br>
+    </blockquote>
+    <br>
+</li>
+  <li>Launch a VM on two networks. Order matters in determining the
+device (eth0 and eth1). The user-data file is recognized as a script to
+be executed by cloud-init because of the "#!" in the begining of it.:<br>
+    <br>
+    openstack server create --image CirrosQcow --flavor 1 --nic net-id=private --nic net-id=dbnet --user-data fix-interfaces.txt web<br>
+    <br>
+  </li>
+  <li>Test you setup by loging in to both VMs and check network connectivity<br>
+    <br>
+  </li>
+
+</ol>
+
+
+</body></html>
