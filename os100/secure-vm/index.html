@@ -38,12 +38,12 @@ ifup eth1<br>
 </li>
   <li>Launch a VM on two networks. Order matters in determining the
 device (eth0 and eth1). The user-data file is recognized as a script to
-be executed by cloud-init because of the "#!" in the begining of it.:<br>
+be executed by cloud-init because of the "#!" in the beginning of it.:<br>
     <br>
     openstack server create --image CirrosQcow --flavor 1 --nic net-id=private --nic net-id=dbnet --user-data fix-interfaces.txt web<br>
     <br>
   </li>
-  <li>Test your setup by loging in to both VMs and checking network connectivity<br>
+  <li>Test your setup by logging in to both VMs and checking network connectivity<br>
     <br>
   </li>
 
